@@ -8,9 +8,8 @@ build/
 /test/tmp/
 
 # Locally generated artifacts
-/src/app/abcip
-/src/protos/prototool-inc.h
-/src/protos/prototool-new.h
+#/src/protos/prototool-inc.h
+#/src/protos/prototool-new.h
 
 # Other stuff
 *.rej

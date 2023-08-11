@@ -1,8 +1,24 @@
 cmake_minimum_required(VERSION 3.9)
 project(common)
+set(CMAKE_CXX_STANDARD 14)
+
+
+# Add the library target
+add_library(
+    common
+    STATIC
+)
+
+target_compile_options(
+    common
+    PRIVATE
+    -fPIC
+)
 
 # List of source files
-set(libcommon_la_SOURCES
+target_sources(
+    common
+    PRIVATE
     abc_io.cc abc_io.h
     abc_ip.cc abc_ip.h
     attribute.cc attribute.h
@@ -24,10 +40,9 @@ set(libcommon_la_SOURCES
     writer.h
 )
 
-# Add the library target
-add_library(common STATIC ${libcommon_la_SOURCES})
-
-target_compile_options(common PRIVATE -fPIC)
-
 # Set include directories
-target_include_directories(common PRIVATE ${CMAKE_SOURCE_DIR}/src/protos)
+target_include_directories(
+    common
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/protos
+)
