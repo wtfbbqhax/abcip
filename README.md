@@ -4,8 +4,6 @@ pcaps for testing, especially pcaps containing flawed packets.
 To get started after cloning the repo, do this:
 
 ````
-    ./bootstrap
-    ./configure
     make
     make install
 ````

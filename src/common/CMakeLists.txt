@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.0)
+project(common)
+
+# List of source files
+set(libcommon_la_SOURCES
+    abc_io.cc abc_io.h
+    abc_ip.cc abc_ip.h
+    attribute.cc attribute.h
+    cake.cc cake.h
+    cmd_parser.cc cmd_parser.h
+    command.h
+    data.cc data.h
+    data_parser.cc data_parser.h
+    dumb_user.cc dumb_user.h
+    field.cc field.h
+    packet.h
+    parser.h
+    pile.cc pile.h
+    pseudo_hdr.h pseudo_hdr.cc
+    reader.h
+    status.cc status.h
+    stream_reader.cc stream_reader.h
+    user.cc user.h
+    writer.h
+)
+
+# Add the library target
+add_library(common STATIC ${libcommon_la_SOURCES})
+
+target_compile_options(common PRIVATE -fPIC)
+
+# Set include directories
+target_include_directories(common PRIVATE ${CMAKE_SOURCE_DIR}/src/protos)
