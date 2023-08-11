@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.9)
 project(abcip)
 
 # Find LibPCAP
@@ -27,7 +27,9 @@ target_include_directories(abcip PRIVATE ${CMAKE_SOURCE_DIR}/src/common ${CMAKE_
 # Link against required libraries
 target_link_libraries(abcip
     PRIVATE
-    ${CMAKE_BINARY_DIR}/src/protos/libproto.a
-    ${CMAKE_BINARY_DIR}/src/common/libcommon.a
+    proto
+    common
     ${LIBPCAP_LIBRARIES}
 )
+
+install(TARGETS abcip DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")

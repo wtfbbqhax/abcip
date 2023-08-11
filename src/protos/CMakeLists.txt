@@ -1,8 +1,32 @@
 cmake_minimum_required(VERSION 3.0)
 project(proto)
 
+# Generate built sources
+add_custom_command(
+    OUTPUT ${CMAKE_SOURCE_DIR}/src/protos/prototool-inc.h
+    COMMAND grep -h -A 2 "__PROTOTOOL_TAG__" ${CMAKE_SOURCE_DIR}/src/protos/*.h | sort -u | grep include | grep -iv xyz > ${CMAKE_SOURCE_DIR}/src/protos/prototool-inc.h
+    DEPENDS ${libproto_la_SOURCES}
+)
+
+add_custom_command(
+    OUTPUT ${CMAKE_SOURCE_DIR}/src/protos/prototool-new.h
+    COMMAND grep -h -A 2 "__PROTOTOOL_TAG__" ${CMAKE_SOURCE_DIR}/src/protos/*.h | sort -u | grep PROTOTOOL_NEW | grep -iv xyz > ${CMAKE_SOURCE_DIR}/src/protos/prototool-new.h
+    DEPENDS ${libproto_la_SOURCES}
+)
+
+
+add_library(
+    proto STATIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/prototool-inc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/prototool-new.h
+)
+
+# Add the library target
+target_compile_options(proto PRIVATE -fPIC)
+
 # List of source files
-set(libproto_la_SOURCES
+target_sources(proto
+    PRIVATE
     arp.cc arp.h
     eth.cc eth.h
     frag6.cc frag6.h
@@ -20,6 +44,7 @@ set(libproto_la_SOURCES
     pppoe.cc pppoe.h
     protocol.cc protocol.h
     prototool.cc prototool.h
+    #    prototool-inc.h prototool-new.h
     raw.cc raw.h
     rte6.cc rte6.h
     tcp.cc tcp.h
@@ -27,23 +52,6 @@ set(libproto_la_SOURCES
     vlan.cc vlan.h
 )
 
-# Generate built sources
-add_custom_command(
-    OUTPUT prototool-inc.h
-    COMMAND grep -h -A 2 "__PROTOTOOL_TAG__" ${CMAKE_SOURCE_DIR}/src/protos/*.h | sort -u | grep include | grep -iv xyz > prototool-inc.h
-    DEPENDS ${libproto_la_SOURCES}
-)
+target_include_directories(proto PRIVATE ${CMAKE_SOURCE_DIR}/src/common)
 
-add_custom_command(
-    OUTPUT prototool-new.h
-    COMMAND grep -h -A 2 "__PROTOTOOL_TAG__" ${CMAKE_SOURCE_DIR}/src/protos/*.h | sort -u | grep PROTOTOOL_NEW | grep -iv xyz > prototool-new.h
-    DEPENDS ${libproto_la_SOURCES}
-)
 
-# Add the library target
-add_library(proto STATIC ${libproto_la_SOURCES} prototool-inc.h prototool-new.h)
-target_compile_options(common PRIVATE -fPIC)
-
-# Set include directories
-# NOTE Adding CMAKE_BINARY_DIR because of the custom commands above.
-target_include_directories(proto PRIVATE ${CMAKE_SOURCE_DIR}/src/common ${CMAKE_BINARY_DIR}/src/protos ${CMAKE_SOURCE_DIR}/src/protos)

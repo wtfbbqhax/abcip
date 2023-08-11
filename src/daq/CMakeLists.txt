@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.9)
 project(daq_abc)
 
 # Find LibPCAP
@@ -14,21 +14,22 @@ set(daq_abc_la_SOURCES
 )
 
 # Add the library target
-add_library(daq_abc MODULE ${daq_abc_la_SOURCES})
+add_library(daq_abc MODULE ${daq_abc_la_SOURCES} 
+    ${CMAKE_SOURCE_DIR}/src/protos/prototool-inc.h
+    ${CMAKE_SOURCE_DIR}/src/protos/prototool-new.h
+)
 
 # Set target properties
+set_target_properties(daq_abc PROPERTIES OUTPUT_NAME daq_abc PREFIX "")
+
 target_include_directories(daq_abc PRIVATE ${CMAKE_SOURCE_DIR}/src/common ${CMAKE_SOURCE_DIR}/src/protos)
-set_target_properties(daq_abc PROPERTIES
-    OUTPUT_NAME daq_abc
-    PREFIX ""
-    LINK_FLAGS "-export-dynamic"
-)
 
 # Link against required libraries
 target_link_libraries(daq_abc
-    PRIVATE
-    ${CMAKE_BINARY_DIR}/src/protos/libproto.a
-    ${CMAKE_BINARY_DIR}/src/common/libcommon.a
+    PRIVATE 
+    proto
+    common
 )
 
-add_custom_target(daq_module ALL DEPENDS daq_abc)
+install(TARGETS daq_abc DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/daq")
+
